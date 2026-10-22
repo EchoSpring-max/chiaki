@@ -204,7 +204,13 @@ CHIAKI_EXPORT ChiakiErrorCode chiaki_stop_pipe_connect(ChiakiStopPipe *stop_pipe
 	int sockerr;
 #endif
 	socklen_t sockerr_sz = sizeof(sockerr);
-	if(getsockopt(fd, SOL_SOCKET, SO_ERROR, &sockerr, &sockerr_sz) < 0)
+	if(getsockopt(fd, SOL_SOCKET, SO_ERROR,
+#ifdef _WIN32
+			(char *)&sockerr,
+#else
+			&sockerr,
+#endif
+			&sockerr_sz) < 0)
 		return CHIAKI_ERR_UNKNOWN;
 
 #ifdef _WIN32
